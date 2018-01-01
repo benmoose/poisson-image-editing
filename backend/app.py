@@ -1,12 +1,22 @@
-from flask import Flask
+from flask import Flask, json, url_for
+from PIL import Image
+
+from poisson.model import PoissonImageEditor
+from poisson.utils.img_dir import get_images
+from poisson.utils.api import data_url
 
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello():
-    return 'Hello world!'
+@app.route('/images')
+def images():
+    files = get_images('./static')
+    return json.jsonify(
+       list(map(lambda f: {
+           'name': f,
+           'url': url_for('static', filename=f)
+       }, files)))
 
 
 if __name__ == '__main__':
