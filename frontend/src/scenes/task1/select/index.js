@@ -13,7 +13,17 @@ class App extends Component {
 
   render () {
     return (
-      <div className='container mt-4'>
+      <div className='container pt-4'>
+        <div className='card mb-4'>
+          <div className='card-body'>
+            <h5 className='card-title'>Task 1</h5>
+            Select a grayscale image. Mark out a region using a polygon (you can use rpoly).
+            Remove the selected region and fill it in using the Equation (2) in the paper.
+            You are solving for unknown intensity values inside the region <code>R</code>.
+            Test the method in smooth regions and also in regions with edges (high-frequency).
+            Also report the behavior as the size of the selected region increases.
+          </div>
+        </div>
         <div className='row'>
           {
             this.state.images.map(i => (

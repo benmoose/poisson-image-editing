@@ -1,4 +1,5 @@
 import os
+import uuid
 
 
 def get_images(img_dir='img'):
@@ -13,3 +14,12 @@ def get_images(img_dir='img'):
     for file in [f for f in files if f.lower().split('.')[-1] in img_exts]:
         img_files.append(file)
     return img_files
+
+
+def save_image(image):
+    uid = str(uuid.uuid4())[:5]
+    out_name = 'cropped-{uid}.jpg'.format(uid=uid)
+    out_dir = 'static/out/t1'
+    save_to = os.path.join(out_dir, out_name)
+    image.save(save_to)
+    return save_to

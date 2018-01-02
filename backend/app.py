@@ -30,22 +30,25 @@ def images():
 # TASK 1 ROUTE
 @app.route('/poisson/t1/<image_name>')
 def poisson(image_name):
+    # Load image
+    try:
+        im = Image.open('static/{}'.format(image_name))
+    except FileNotFoundError:
+        raise APIError('{} was not found'.format(image_name), status_code=404)
     # Get region corner coords (tl, tr, bl, br)
     region = request.args.get('region')
     if not region:
         raise APIError('region is a required parameter')
-    # Convert region string to array
-    region_arr = [int(p) for p in region.split(',')]
+    # Convert region string to array (relative % -> abs px)
+    region_arr = [round(float(p) * (im.width if i % 2 == 0 else im.height)) for i, p in enumerate(region.split(','))]
     # Validate length
     if len(region_arr) % 2 != 0:
         raise APIError('There must be an even number of region values')
-    # Load the image and run the task
-    try:
-        im = Image.open('static/{}'.format(image_name))
-        saved_to = task1.task1(im, region_arr)
-        return jsonify(cropped_url='/{}'.format(saved_to))
-    except FileNotFoundError:
-        raise APIError('{} was not found'.format(image_name), status_code=404)
+    # Run the task
+    saved_to = task1.task1(im, region_arr)
+    return jsonify(
+        cropped_url='/{}'.format(saved_to),
+        region=region_arr)
 
 
 if __name__ == '__main__':

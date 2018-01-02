@@ -61,4 +61,4 @@ typings/
 .env
 
 # Python
-*/__pycache__
+__pycache__/*
