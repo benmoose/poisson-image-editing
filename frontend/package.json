@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.17.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-svg-pathline": "^0.4.0"
   },
   "devDependencies": {
-    "react-scripts": "1.0.17"
+    "react-scripts": "1.0.17",
+    "standard": "^10.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

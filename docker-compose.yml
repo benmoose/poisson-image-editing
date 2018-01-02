@@ -11,5 +11,7 @@ services:
   frontend:
     build: ./frontend
     command: yarn start
+    volumes:
+      - ./frontend:/code
     ports:
       - "3000:3000"
