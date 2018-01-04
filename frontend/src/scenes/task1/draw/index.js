@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
+import classnames from 'classnames'
 import { Link } from 'react-router-dom'
-import debounce from 'lodash.debounce'
 
 class Task1 extends React.Component {
   state = {
@@ -24,14 +24,12 @@ class Task1 extends React.Component {
     const clientY = e.clientY - y
     this.setState(p => ({
       region: [...p.region, { x: clientX, y: clientY }]
-    }), this._handleRunTask)
+    }))
   }
 
   handleRegionClear = (e) => this.setState({ region: [], resultUrl: '' })
 
-  handleRunTask = () => debounce(this._handleRunTask, 1000)
-
-  _handleRunTask = () => {
+  handleRunTask = () => {
     const { region, imageBoundingClientRect } = this.state
     if (region.length < 3) return
     this.setState({ loading: true })
@@ -101,7 +99,7 @@ class Task1 extends React.Component {
               </div>
             </div>
             <div className='col-6 d-flex flex-column'>
-              <h5>Result</h5>
+              <h5 className={classnames({ 'text-muted': loading })}>Result</h5>
               {resultUrl ? (
                 <img
                   src={`http://localhost:5000${resultUrl}`}
@@ -109,7 +107,7 @@ class Task1 extends React.Component {
                   className='img-fluid'
                   style={{ objectFit: 'contain' }}
                 />
-              ) : <div className='card h-100' />}
+              ) : <div className={classnames('card h-100', { 'bg-light': loading })} />}
             </div>
           </div>
         </div>
