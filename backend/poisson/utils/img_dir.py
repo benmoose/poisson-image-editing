@@ -16,9 +16,9 @@ def get_images(img_dir='img'):
     return img_files
 
 
-def save_image(image):
+def save_image(image, name='out'):
     uid = str(uuid.uuid4())[:5]
-    out_name = 'cropped-{uid}.jpg'.format(uid=uid)
+    out_name = '{name}-{uid}.png'.format(name=name, uid=uid)
     out_dir = 'static/out/t1'
     save_to = os.path.join(out_dir, out_name)
     image.save(save_to)
