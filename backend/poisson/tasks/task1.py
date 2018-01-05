@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from ..utils.img_dir import save_image, clean_img_dir
+from ..utils.img import generate_filled_pixels, get_neighbour_labels
 
 
 def _generate_a_b(labelled_pixels, im_size):
@@ -21,15 +22,8 @@ def _generate_a_b(labelled_pixels, im_size):
         _, alpha = pixel
         in_region = alpha == 0
 
-        def get_neighbour_labels():
-            index_in_row = index % im_width
-            left = 1 if index_in_row - 1 >= 0 else 0
-            right = 1 if index_in_row + 1 < im_width else 0
-            top = 1 if index >= im_width else 0
-            bottom = 1 if index < len(labelled_pixels) - im_width else 0
-            return top, right, bottom, left
-
-        top_n, right_n, bottom_n, left_n = get_neighbour_labels()
+        top_n, right_n, bottom_n, left_n = get_neighbour_labels(
+            index, im_width, len(labelled_pixels))
         neighbour_count = top_n + right_n + bottom_n + left_n
 
         if in_region:
@@ -81,17 +75,6 @@ def _generate_a_b(labelled_pixels, im_size):
     return A, b
 
 
-def _generate_filled_pixels(labelled_pixels, x):
-    k_pos = 0
-    result = np.copy(labelled_pixels).astype(np.uint8)
-    for index, pixel in enumerate(labelled_pixels):
-        _, alpha = pixel
-        if alpha == 0:
-            result[index] = int(x[k_pos]), 255
-            k_pos += 1
-    return result
-
-
 def task1(image, region):
     """
     Takes an image and a region and returns the image with the region filled in
@@ -119,7 +102,7 @@ def task1(image, region):
     # Create A and b
     A, b = _generate_a_b(f_star_pixels, image.size)
     x = np.linalg.solve(A, b)
-    filled_pixels = _generate_filled_pixels(f_star_pixels, x)
+    filled_pixels = generate_filled_pixels(f_star_pixels, x)
     filled_image = np.reshape(filled_pixels, (image.height, image.width, 2))
 
     # Save result to `out`, returning path to image

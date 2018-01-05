@@ -2,15 +2,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from ..utils.img_dir import save_image, clean_img_dir
-
-
-def _get_neighbour_labels(index, im_width, pixel_count):
-    index_in_row = index % im_width
-    left = 1 if index_in_row - 1 >= 0 else 0
-    right = 1 if index_in_row + 1 < im_width else 0
-    top = 1 if index >= im_width else 0
-    bottom = 1 if index < pixel_count - im_width else 0
-    return top, right, bottom, left
+from ..utils.img import generate_filled_pixels, get_neighbour_labels
 
 
 def _generate_v_imported_gradient(labelled_pixels, im_size):
@@ -26,7 +18,7 @@ def _generate_v_imported_gradient(labelled_pixels, im_size):
         if not in_region:
             continue
 
-        top_n, _, _, left_n = _get_neighbour_labels(
+        top_n, _, _, left_n = get_neighbour_labels(
             index, im_width, len(labelled_pixels))
 
         # need to compute, for all <p, q>, v[pq] = g[p] - g[q]
@@ -46,7 +38,7 @@ def _generate_v_imported_gradient(labelled_pixels, im_size):
     return v
 
 
-def _generate_a_b(labelled_pixels_dest, dest_size, source_size, v):
+def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size, source_size):
     dest_im_width, dest_im_height = dest_size
     source_im_width, _ = source_size
     # Count the number of pixels in the region
@@ -62,7 +54,7 @@ def _generate_a_b(labelled_pixels_dest, dest_size, source_size, v):
         _, alpha = pixel
         in_region = alpha == 0
 
-        top_n, right_n, bottom_n, left_n = _get_neighbour_labels(
+        top_n, right_n, bottom_n, left_n = get_neighbour_labels(
             index, dest_im_width, len(labelled_pixels_dest))
         neighbour_count = top_n + right_n + bottom_n + left_n
 
@@ -78,8 +70,7 @@ def _generate_a_b(labelled_pixels_dest, dest_size, source_size, v):
                     A[k_pos, n_k_pos] = -1
                     A[n_k_pos, k_pos] = -1
                 except KeyError:
-                    # Not in region
-                    pass
+                    pass  # Not in region
             if left_n:
                 try:
                     # check neighbour is in region
@@ -87,8 +78,7 @@ def _generate_a_b(labelled_pixels_dest, dest_size, source_size, v):
                     A[k_pos, n_k_pos] = -1
                     A[n_k_pos, k_pos] = -1
                 except KeyError:
-                    # Not in region
-                    pass
+                    pass  # Not in region
             # Check if any neighbours are non region pixels (a.k.a on
             #  boundary)
             # and if so sum them and add to b
@@ -98,48 +88,35 @@ def _generate_a_b(labelled_pixels_dest, dest_size, source_size, v):
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += v[index, index - source_im_width]
+                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index - source_im_width][0]) / 1
             if right_n:
                 n_intensity, n_alpha = labelled_pixels_dest[index + 1]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += v[index, index + 1]
+                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index + 1][0]) / 1
             if bottom_n:
                 n_intensity, n_alpha = labelled_pixels_dest[index + dest_im_width]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += v[index, index + source_im_width]
+                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index + source_im_width][0]) / 1
             if left_n:
                 n_intensity, n_alpha = labelled_pixels_dest[index - 1]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += v[index, index - 1]
-            if b_value > 0:
-                b[k_pos] += b_value
+                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index - 1][0]) / 1
 
+            b[k_pos] = b_value
             k_pos += 1
+
     return A, b
-
-
-def _generate_filled_pixels(labelled_pixels, x):
-    k_pos = 0
-    result = np.copy(labelled_pixels).astype(np.uint8)
-    for index, pixel in enumerate(labelled_pixels):
-        _, alpha = pixel
-        if alpha == 0:
-            result[index] = int(min(x[k_pos], 255)), 255
-            k_pos += 1
-    return result
 
 
 def task2(source_image, dest_image, region):
     # Clean img dir
     clean_img_dir('t2')
-    # TODO: remove this line once all images are same size
-    dest_image = source_image.copy()
     # Convert images to greyscale
     source_image = source_image.convert('L')
     dest_image = dest_image.convert('L')
@@ -155,13 +132,13 @@ def task2(source_image, dest_image, region):
     f.putalpha(mask)
     f_pixels = list(f.getdata())
     # Note v must be the same shape as dest image
-    v = _generate_v_imported_gradient(g_pixels, source_image.size)
-    A, b = _generate_a_b(f_pixels, dest_image.size, source_image.size, v)
+    # v = _generate_v_imported_gradient(g_pixels, source_image.size)
+    A, b = _generate_a_b(f_pixels, g_pixels, dest_image.size, source_image.size)
     x = np.linalg.solve(A, b)
     print('A', A)
     print('b', b)
     print('x', x)
-    filled_pixels = _generate_filled_pixels(f_pixels, x)
+    filled_pixels = generate_filled_pixels(f_pixels, x)
     filled_image = np.reshape(filled_pixels, (dest_image.height, dest_image.width, 2))
 
     # Save result to `out`, returning path to image
