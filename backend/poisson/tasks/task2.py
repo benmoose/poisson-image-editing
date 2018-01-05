@@ -38,11 +38,13 @@ def _generate_v_imported_gradient(labelled_pixels, im_size):
     return v
 
 
-def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size, source_size):
+def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size,
+                  source_size, import_gradients):
     dest_im_width, dest_im_height = dest_size
     source_im_width, _ = source_size
     # Count the number of pixels in the region
-    region_length = sum(map(lambda p: 1 if p[1] == 0 else 0, labelled_pixels_dest))
+    region_length = sum(
+        map(lambda p: 1 if p[1] == 0 else 0, labelled_pixels_dest))
     # Initialise the matrix and column vector
     A = np.zeros((region_length, region_length))
     b = np.zeros(region_length)
@@ -84,29 +86,67 @@ def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size, sourc
             # and if so sum them and add to b
             b_value = 0
             if top_n:
-                n_intensity, n_alpha = labelled_pixels_dest[index - dest_im_width]
+                n_intensity, n_alpha = labelled_pixels_dest[
+                    index - dest_im_width]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index - source_im_width][0]) / 1
+                if import_gradients:
+                    b_value += labelled_pixels_source[index][0] - \
+                               labelled_pixels_source[index - source_im_width][0]
+                else:
+                    g_b_add = labelled_pixels_source[index][0] - \
+                              labelled_pixels_source[index - source_im_width][0]
+                    f_b_add = labelled_pixels_dest[index][0] - \
+                              labelled_pixels_dest[index - dest_im_width][0]
+                    b_value += f_b_add if abs(f_b_add) > abs(g_b_add) \
+                        else g_b_add
             if right_n:
                 n_intensity, n_alpha = labelled_pixels_dest[index + 1]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index + 1][0]) / 1
+                if import_gradients:
+                    b_value += labelled_pixels_source[index][0] - \
+                               labelled_pixels_source[index + 1][0]
+                else:
+                    g_b_add = labelled_pixels_source[index][0] - \
+                              labelled_pixels_source[index + 1][0]
+                    f_b_add = labelled_pixels_dest[index][0] - \
+                              labelled_pixels_dest[index + 1][0]
+                    b_value += f_b_add if abs(f_b_add) > abs(g_b_add) \
+                        else g_b_add
             if bottom_n:
-                n_intensity, n_alpha = labelled_pixels_dest[index + dest_im_width]
+                n_intensity, n_alpha = labelled_pixels_dest[
+                    index + dest_im_width]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index + source_im_width][0]) / 1
+                if import_gradients:
+                    b_value += labelled_pixels_source[index][0] - \
+                               labelled_pixels_source[index + source_im_width][0]
+                else:
+                    g_b_add = labelled_pixels_source[index][0] - \
+                              labelled_pixels_source[index + source_im_width][0]
+                    f_b_add = labelled_pixels_dest[index][0] - \
+                              labelled_pixels_dest[index + dest_im_width][0]
+                    b_value += f_b_add if abs(f_b_add) > abs(g_b_add) \
+                        else g_b_add
             if left_n:
                 n_intensity, n_alpha = labelled_pixels_dest[index - 1]
                 if n_alpha != 0:
                     b_value += n_intensity
                 # add in v[pq]
-                b_value += (labelled_pixels_source[index][0] - labelled_pixels_source[index - 1][0]) / 1
+                if import_gradients:
+                    b_value += labelled_pixels_source[index][0] - \
+                               labelled_pixels_source[index - 1][0]
+                else:
+                    g_b_add = labelled_pixels_source[index][0] - \
+                              labelled_pixels_source[index - 1][0]
+                    f_b_add = labelled_pixels_dest[index][0] - \
+                              labelled_pixels_dest[index - 1][0]
+                    b_value += f_b_add if abs(f_b_add) > abs(g_b_add) \
+                        else g_b_add
 
             b[k_pos] = b_value
             k_pos += 1
@@ -114,7 +154,7 @@ def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size, sourc
     return A, b
 
 
-def task2(source_image, dest_image, region):
+def task2(source_image, dest_image, region, import_gradients=True):
     # Clean img dir
     clean_img_dir('t2')
     # Convert images to greyscale
@@ -133,13 +173,16 @@ def task2(source_image, dest_image, region):
     f_pixels = list(f.getdata())
     # Note v must be the same shape as dest image
     # v = _generate_v_imported_gradient(g_pixels, source_image.size)
-    A, b = _generate_a_b(f_pixels, g_pixels, dest_image.size, source_image.size)
+    A, b = _generate_a_b(
+        f_pixels, g_pixels, dest_image.size, source_image.size,
+        import_gradients)
     x = np.linalg.solve(A, b)
     print('A', A)
     print('b', b)
     print('x', x)
     filled_pixels = generate_filled_pixels(f_pixels, x)
-    filled_image = np.reshape(filled_pixels, (dest_image.height, dest_image.width, 2))
+    filled_image = np.reshape(filled_pixels,
+                              (dest_image.height, dest_image.width, 2))
 
     # Save result to `out`, returning path to image
     return save_image(

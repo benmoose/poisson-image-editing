@@ -49,8 +49,11 @@ def task2_route(source_name, dest_image):
     # Get region corner coords (tl, tr, bl, br)
     region = request.args.get('region')
     region_arr = parse_region(region, source_im.size)
+    import_gradients_query = request.args.get('import_gradients') or ''
+    import_gradients = import_gradients_query.lower() == 'true'
     # Run the task
-    saved_to = task2.task2(source_im, dest_im, region_arr)
+    print('ig', import_gradients)
+    saved_to = task2.task2(source_im, dest_im, region_arr, import_gradients=import_gradients)
     return jsonify(result_url='/{}'.format(saved_to))
 
 

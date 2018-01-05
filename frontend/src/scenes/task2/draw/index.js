@@ -11,7 +11,8 @@ class Task2 extends React.Component {
     region: [],
     loading: false,
     images: [],
-    destImage: 0
+    destImage: 0,
+    importGradients: true
   }
 
   componentDidMount () {
@@ -37,20 +38,24 @@ class Task2 extends React.Component {
 
   handleRegionClear = (e) => this.setState({ region: [], resultUrl: '' })
 
+  handleToggleUseImportGradients = (e) => {
+    this.setState(p => ({ importGradients: !p.importGradients }))
+  }
+
   handleRunTask = () => {
-    const { region, imageBoundingClientRect, images, destImage, imageName } = this.state
+    const { region, imageBoundingClientRect, images, destImage, imageName, importGradients } = this.state
     if (region.length < 3) return
     this.setState({ loading: true })
     // Values are abs, but we need percentages
     const encodedRegion = region.map(p => `${(p.x / imageBoundingClientRect.width).toFixed(2) },${(p.y / imageBoundingClientRect.height).toFixed(2)}`).join(',')
     axios.get(`http://localhost:5000/poisson/t2/${imageName}/${images[destImage].name}`, {
-      params: { region: encodedRegion }
+      params: { region: encodedRegion, import_gradients: importGradients },
     })
       .then(res => this.setState({ resultUrl: res.data.result_url, loading: false }))
   }
 
   render () {
-    const { imageName, region, resultUrl, loading, destImage } = this.state
+    const { imageName, region, resultUrl, loading, destImage, importGradients } = this.state
     return (
       <div>
         <div className='navbar navbar-expand bg-light navbar-light'>
@@ -58,6 +63,10 @@ class Task2 extends React.Component {
             <h5 className='navbar-brand mb-0'>{imageName}</h5>
             <div>
               <Link to='/task2'>Back</Link>
+              <button
+                className={classnames('btn ml-2', { 'btn-warning': importGradients, 'btn-secondary': !importGradients })}
+                onClick={this.handleToggleUseImportGradients}
+              >Import Gradients {importGradients ? 'ON' : 'OFF'}</button>
               <button
                 disabled={!region.length || loading}
                 className='btn btn-danger ml-2'
