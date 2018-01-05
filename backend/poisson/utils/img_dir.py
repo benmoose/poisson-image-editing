@@ -16,10 +16,20 @@ def get_images(img_dir='img'):
     return img_files
 
 
-def save_image(image, name='out'):
-    uid = str(uuid.uuid4())[:5]
-    out_name = '{name}-{uid}.png'.format(name=name, uid=uid)
-    out_dir = 'static/out/t1'
+def save_image(image, task, name='out', use_hash=True):
+    if not task:
+        raise ValueError('Must specify a task directory')
+    uid = '-{}'.format(str(uuid.uuid4())[:5]) if use_hash else ''
+    out_name = '{name}{uid}.png'.format(name=name, uid=uid)
+    out_dir = 'static/out/{}'.format(task)
     save_to = os.path.join(out_dir, out_name)
     image.save(save_to)
     return save_to
+
+
+def clean_img_dir(task_dir):
+    if not task_dir:
+        raise ValueError('Must specify a task directory')
+    files = os.listdir(os.path.join('static', 'out', task_dir))
+    for file in files:
+        os.remove(os.path.join('static', 'out', task_dir, file))

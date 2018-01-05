@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, url_for, request, abort
 from flask_cors import CORS
-from PIL import Image
 
 from poisson.utils.img_dir import get_images
 from poisson.utils.api import APIError
-from poisson.tasks import task1
+from poisson.utils.task_setup import load_image_or_error, parse_region
+from poisson.tasks import task1, task2
 
 
 app = Flask(__name__)
@@ -29,26 +29,29 @@ def images():
 
 # TASK 1 ROUTE
 @app.route('/poisson/t1/<image_name>')
-def poisson(image_name):
+def task1_route(image_name):
     # Load image
-    try:
-        im = Image.open('static/{}'.format(image_name))
-    except FileNotFoundError:
-        raise APIError('{} was not found'.format(image_name), status_code=404)
+    im = load_image_or_error(image_name)
     # Get region corner coords (tl, tr, bl, br)
     region = request.args.get('region')
-    if not region:
-        raise APIError('region is a required parameter')
-    # Convert region string to array (relative % -> abs px)
-    region_arr = [round(float(p) * (im.width if i % 2 == 0 else im.height)) for i, p in enumerate(region.split(','))]
-    # Validate length
-    if len(region_arr) % 2 != 0:
-        raise APIError('There must be an even number of region values')
+    region_arr = parse_region(region, im.size)
     # Run the task
     saved_to = task1.task1(im, region_arr)
-    return jsonify(
-        cropped_url='/{}'.format(saved_to),
-        region=region_arr)
+    return jsonify(result_url='/{}'.format(saved_to))
+
+
+# TASK 2 ROUTE
+@app.route('/poisson/t2/<source_name>/<dest_image>')
+def task2_route(source_name, dest_image):
+    # Load image
+    source_im = load_image_or_error(source_name)
+    dest_im = load_image_or_error(dest_image)
+    # Get region corner coords (tl, tr, bl, br)
+    region = request.args.get('region')
+    region_arr = parse_region(region, source_im.size)
+    # Run the task
+    saved_to = task2.task2(source_im, dest_im, region_arr)
+    return jsonify(result_url='/{}'.format(saved_to))
 
 
 if __name__ == '__main__':

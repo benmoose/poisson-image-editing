@@ -1,7 +1,7 @@
 import numpy as np
-from PIL import Image, ImageDraw, ImageOps, ImageFilter
+from PIL import Image, ImageDraw
 
-from ..utils.img_dir import save_image
+from ..utils.img_dir import save_image, clean_img_dir
 
 
 def _generate_a_b(labelled_pixels, im_size):
@@ -18,7 +18,8 @@ def _generate_a_b(labelled_pixels, im_size):
     region_pixel_k_pos = {}
     # Iterate over each pixel in the image
     for index, pixel in enumerate(labelled_pixels):
-        intensity, alpha = pixel
+        _, alpha = pixel
+        in_region = alpha == 0
 
         def get_neighbour_labels():
             index_in_row = index % im_width
@@ -31,7 +32,7 @@ def _generate_a_b(labelled_pixels, im_size):
         top_n, right_n, bottom_n, left_n = get_neighbour_labels()
         neighbour_count = top_n + right_n + bottom_n + left_n
 
-        if alpha == 0:
+        if in_region:
             region_pixel_k_pos[index] = k_pos
             # Add number of neighbours to A
             A[k_pos, k_pos] = neighbour_count
@@ -96,8 +97,13 @@ def task1(image, region):
     Takes an image and a region and returns the image with the region filled in
     with the results of Eq(2)
     """
+    # Clean task 1 img dir (silently fail)
+    try:
+        clean_img_dir('t1')
+    except:
+        pass
+    # Convert to greyscale
     image = image.convert('L')
-
     # Create b/w mask of region
     mask = Image.new('L', image.size, 255)
     ImageDraw.Draw(mask).polygon(region, fill=0, outline=0)
@@ -108,6 +114,7 @@ def task1(image, region):
     # Each pixel is a tuple (intensity, alpha)
     # alpha is either (0 = in region) or (255 = not in region)
     # from this can build matrix A and column vector b
+    # Get pixels as 1D array
     f_star_pixels = list(f_star.getdata())
     # Create A and b
     A, b = _generate_a_b(f_star_pixels, image.size)
@@ -116,4 +123,5 @@ def task1(image, region):
     filled_image = np.reshape(filled_pixels, (image.height, image.width, 2))
 
     # Save result to `out`, returning path to image
-    return save_image(Image.fromarray(filled_image, mode='LA'), name='t1')
+    return save_image(
+        Image.fromarray(filled_image, mode='LA'), 't1', name='t1')

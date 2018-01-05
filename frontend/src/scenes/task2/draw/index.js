@@ -3,18 +3,22 @@ import axios from 'axios'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 
-class Task1 extends React.Component {
+class Task2 extends React.Component {
   state = {
     imageName: null,
     imageBoundingClientRect: null,
     resultUrl: '',
     region: [],
-    loading: false
+    loading: false,
+    images: [],
+    destImage: 0
   }
 
   componentDidMount () {
     const { match } = this.props
     this.setState({ imageName: match.params.imageName })
+    axios.get('http://localhost:5000/images')
+      .then(res => this.setState({ images: res.data }))
   }
 
   handleImageClick = (e) => {
@@ -27,36 +31,40 @@ class Task1 extends React.Component {
     }))
   }
 
+  handleDestinationImageClick = (destImage) => {
+    this.setState({ destImage })
+  }
+
   handleRegionClear = (e) => this.setState({ region: [], resultUrl: '' })
 
   handleRunTask = () => {
-    const { region, imageBoundingClientRect } = this.state
+    const { region, imageBoundingClientRect, images, destImage, imageName } = this.state
     if (region.length < 3) return
     this.setState({ loading: true })
     // Values are abs, but we need percentages
     const encodedRegion = region.map(p => `${(p.x / imageBoundingClientRect.width).toFixed(2) },${(p.y / imageBoundingClientRect.height).toFixed(2)}`).join(',')
-    axios.get(`http://localhost:5000/poisson/t1/${this.state.imageName}`, {
+    axios.get(`http://localhost:5000/poisson/t2/${imageName}/${images[destImage].name}`, {
       params: { region: encodedRegion }
     })
       .then(res => this.setState({ resultUrl: res.data.result_url, loading: false }))
   }
 
   render () {
-    const { imageName, region, resultUrl, loading } = this.state
+    const { imageName, region, resultUrl, loading, destImage } = this.state
     return (
       <div>
         <div className='navbar navbar-expand bg-light navbar-light'>
           <div className='d-flex w-100 align-items-center justify-content-between'>
             <h5 className='navbar-brand mb-0'>{imageName}</h5>
             <div>
-              <Link to='/task1'>Back</Link>
+              <Link to='/task2'>Back</Link>
               <button
                 disabled={!region.length || loading}
                 className='btn btn-danger ml-2'
                 onClick={this.handleRegionClear}
               >Clear Region</button>
               <button
-                disabled={region.length < 3 || loading}
+                disabled={region.length < 3 || destImage === null || loading}
                 className='btn btn-primary ml-2'
                 onClick={this.handleRunTask}
               >Run Task</button>
@@ -110,10 +118,37 @@ class Task1 extends React.Component {
               ) : <div className={classnames('card h-100', { 'bg-light': loading })} />}
             </div>
           </div>
+          <div className='row mt-4'>
+            <div className='col-12'>
+              <h5>Destination</h5>
+            </div>
+            {
+              this.state.images.map((i, index) => (
+                <div className='col-6 col-md-4 mb-4' key={i.name}>
+                  <div className='card'>
+                    <img
+                      src={`http://localhost:5000${i.url}`}
+                      alt={i.name}
+                      className='card-img-top'
+                      style={{ objectFit: 'cover', height: '200px' }}
+                    />
+                    <div className='card-body'>
+                      <h5 className='card-title'>{i.name}</h5>
+                      <button
+                        disabled={index === destImage}
+                        onClick={() => this.handleDestinationImageClick(index)}
+                        className='btn btn-primary'
+                      >Select Image</button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default Task1
+export default Task2
