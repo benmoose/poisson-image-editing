@@ -7,4 +7,4 @@ Poisson Image Edition implementation (Image Processing coursework)
 
 ### Demo
 
-![Task 1 demo](https://github.com/benjaminhadfield/poisson-image-editing/tree/master/demos/gifs/t1-demo.gif)
+![Task 1 demo](https://github.com/benjaminhadfield/poisson-image-editing/tree/master/demos/gifs/t1-demo.png)
