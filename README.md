@@ -4,10 +4,10 @@ Poisson Image Edition implementation (Image Processing coursework).
 
 ### Table of Contents
 
- - [Submission Details](#Submission-Details)
- - [Project Structure](#Project-Structure)
- - [Usage](#Usage)
- - [Demo Images](#Demo-Images)
+ - [Submission Details](#submission-details)
+ - [Project Structure](#project-structure)
+ - [Usage](#usage)
+ - [Demo Images](#demo-images)
 
 ### Submission Details
 
