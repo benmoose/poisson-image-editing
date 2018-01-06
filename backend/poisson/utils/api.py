@@ -1,3 +1,6 @@
+from flask import jsonify
+
+
 class APIError(Exception):
     status_code = 400
 
@@ -12,3 +15,7 @@ class APIError(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
+
+
+def saved_image_json(img_dir):
+    return jsonify(result_url='/{}'.format(img_dir))

@@ -16,14 +16,12 @@ class Select extends Component {
       <div className='container pt-4'>
         <div className='card mb-4'>
           <div className='card-body'>
-            <h5 className='card-title'>Task 1</h5>
-              Select a grayscale image. Mark out a region using a polygon (you can use rpoly).
-              Remove the selected region and fill it in using the Equation (2) in the paper.
-              You are solving for unknown intensity values inside the region <code>R</code>.
-              Test the method in smooth regions and also in regions with edges (high-frequency).
-              Also report the behavior as the size of the selected region increases.
+            <h5 className='card-title'>Task 4</h5>
+              Repeat task 2(a) for color images.
+              You have to process R, G, B components separately.
           </div>
         </div>
+        <h5>Select Source Image</h5>
         <div className='row'>
           {
             this.state.images.map(i => (
@@ -37,7 +35,7 @@ class Select extends Component {
                   />
                   <div className='card-body'>
                     <h5 className='card-title'>{i.name}</h5>
-                    <a href={`/task1/${i.name}`} className='card-link'>Select Image</a>
+                    <a href={`/task4/${i.name}`} className='card-link'>Select Image</a>
                   </div>
                 </div>
               </div>

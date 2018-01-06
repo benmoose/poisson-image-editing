@@ -80,11 +80,8 @@ def task1(image, region):
     Takes an image and a region and returns the image with the region filled in
     with the results of Eq(2)
     """
-    # Clean task 1 img dir (silently fail)
-    try:
-        clean_img_dir('t1')
-    except:
-        pass
+    # Clean task 1 img dir
+    clean_img_dir('t1')
     # Convert to greyscale
     image = image.convert('L')
     # Create b/w mask of region

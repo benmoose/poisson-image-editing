@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { string, number } from 'prop-types'
 
 class Select extends Component {
   state = {
@@ -12,12 +13,13 @@ class Select extends Component {
   }
 
   render () {
+    const { taskNumber, taskDescription } = this.props
     return (
       <div className='container pt-4'>
         <div className='card mb-4'>
           <div className='card-body'>
-            <h5 className='card-title'>Task 2</h5>
-              
+            <h5 className='card-title'>Task {taskNumber}</h5>
+            <span>{taskDescription}</span>
           </div>
         </div>
         <h5>Select Source Image</h5>
@@ -34,7 +36,7 @@ class Select extends Component {
                   />
                   <div className='card-body'>
                     <h5 className='card-title'>{i.name}</h5>
-                    <a href={`/task2/${i.name}`} className='card-link'>Select Image</a>
+                    <a href={`/task${taskNumber}/${i.name}`} className='card-link'>Select Image</a>
                   </div>
                 </div>
               </div>
@@ -44,6 +46,11 @@ class Select extends Component {
       </div>
     )
   }
+}
+
+Select.propTypes = {
+  taskNumber: number.isRequired,
+  taskDescription: string.isRequired
 }
 
 export default Select

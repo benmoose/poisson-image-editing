@@ -1,13 +1,13 @@
 import numpy as np
 
 
-def generate_filled_pixels(labelled_pixels, x):
+def generate_filled_pixels(labelled_pixels, new_pixels):
     k_pos = 0
     result = np.copy(labelled_pixels).astype(np.uint8)
     for index, pixel in enumerate(labelled_pixels):
         _, alpha = pixel
         if alpha == 0:
-            result[index] = int(min(x[k_pos], 255)), 255
+            result[index] = int(max(min(new_pixels[k_pos], 255), 0)), 255
             k_pos += 1
     return result
 

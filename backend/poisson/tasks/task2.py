@@ -69,6 +69,7 @@ def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size,
                 try:
                     # check neighbour is in region
                     n_k_pos = region_pixel_k_pos[index - dest_im_width]
+                    # mark neighbours with -1's
                     A[k_pos, n_k_pos] = -1
                     A[n_k_pos, k_pos] = -1
                 except KeyError:
@@ -77,12 +78,12 @@ def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size,
                 try:
                     # check neighbour is in region
                     n_k_pos = region_pixel_k_pos[index - 1]
+                    # mark neighbours with -1's
                     A[k_pos, n_k_pos] = -1
                     A[n_k_pos, k_pos] = -1
                 except KeyError:
                     pass  # Not in region
-            # Check if any neighbours are non region pixels (a.k.a on
-            #  boundary)
+            # Check if any neighbours are non region pixels (a.k.a on boundary)
             # and if so sum them and add to b
             b_value = 0
             if top_n:
@@ -177,9 +178,6 @@ def task2(source_image, dest_image, region, import_gradients=True):
         f_pixels, g_pixels, dest_image.size, source_image.size,
         import_gradients)
     x = np.linalg.solve(A, b)
-    print('A', A)
-    print('b', b)
-    print('x', x)
     filled_pixels = generate_filled_pixels(f_pixels, x)
     filled_image = np.reshape(filled_pixels,
                               (dest_image.height, dest_image.width, 2))

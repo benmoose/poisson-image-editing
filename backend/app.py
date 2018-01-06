@@ -2,9 +2,9 @@ from flask import Flask, jsonify, url_for, request, abort
 from flask_cors import CORS
 
 from poisson.utils.img_dir import get_images
-from poisson.utils.api import APIError
+from poisson.utils.api import APIError, saved_image_json
 from poisson.utils.task_setup import load_image_or_error, parse_region
-from poisson.tasks import task1, task2
+from poisson.tasks import task1, task2, task3, task4, task5
 
 
 app = Flask(__name__)
@@ -37,24 +37,52 @@ def task1_route(image_name):
     region_arr = parse_region(region, im.size)
     # Run the task
     saved_to = task1.task1(im, region_arr)
-    return jsonify(result_url='/{}'.format(saved_to))
+    return saved_image_json(saved_to)
 
 
 # TASK 2 ROUTE
-@app.route('/poisson/t2/<source_name>/<dest_image>')
-def task2_route(source_name, dest_image):
-    # Load image
+@app.route('/poisson/t2/<source_name>/<dest_name>')
+def task2_route(source_name, dest_name):
+    # Load images
     source_im = load_image_or_error(source_name)
-    dest_im = load_image_or_error(dest_image)
+    dest_im = load_image_or_error(dest_name)
     # Get region corner coords (tl, tr, bl, br)
     region = request.args.get('region')
     region_arr = parse_region(region, source_im.size)
+    # Get method type
     import_gradients_query = request.args.get('import_gradients') or ''
     import_gradients = import_gradients_query.lower() == 'true'
     # Run the task
     print('ig', import_gradients)
-    saved_to = task2.task2(source_im, dest_im, region_arr, import_gradients=import_gradients)
-    return jsonify(result_url='/{}'.format(saved_to))
+    saved_to = task2.task2(
+        source_im, dest_im, region_arr, import_gradients=import_gradients)
+    return saved_image_json(saved_to)
+
+
+# TASK 3 ROUTE
+@app.route('/poisson/t3/<source_name>/<dest_name>')
+def task3_route(source_name, dest_name):
+    # Load images
+    source_im = load_image_or_error(source_name)
+    dest_im = load_image_or_error(dest_name)
+    # Get region corner coords (tl, tr, bl, br)
+    region = request.args.get('region')
+    region_arr = parse_region(region, source_im.size)
+    saved_to = task3.task3(source_im, dest_im, region_arr)
+    return saved_image_json(saved_to)
+
+
+# TASK 4 ROUTE
+@app.route('/poisson/t4/<source_name>/<dest_name>')
+def task4_route(source_name, dest_name):
+    # Load images
+    source_im = load_image_or_error(source_name)
+    dest_im = load_image_or_error(dest_name)
+    # Get region corner coords (tl, tr, bl, br)
+    region = request.args.get('region')
+    region_arr = parse_region(region, source_im.size)
+    saved_to = task4.task4(source_im, dest_im, region)
+    return saved_image_json(saved_to)
 
 
 if __name__ == '__main__':

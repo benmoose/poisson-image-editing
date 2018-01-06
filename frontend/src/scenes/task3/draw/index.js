@@ -3,7 +3,7 @@ import axios from 'axios'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 
-class Task2 extends React.Component {
+class Task3 extends React.Component {
   state = {
     imageName: null,
     imageBoundingClientRect: null,
@@ -11,8 +11,7 @@ class Task2 extends React.Component {
     region: [],
     loading: false,
     images: [],
-    destImage: 0,
-    importGradients: true
+    destImage: 0
   }
 
   componentDidMount () {
@@ -38,35 +37,27 @@ class Task2 extends React.Component {
 
   handleRegionClear = (e) => this.setState({ region: [], resultUrl: '' })
 
-  handleToggleUseImportGradients = (e) => {
-    this.setState(p => ({ importGradients: !p.importGradients }))
-  }
-
   handleRunTask = () => {
-    const { region, imageBoundingClientRect, images, destImage, imageName, importGradients } = this.state
+    const { region, imageBoundingClientRect, images, destImage, imageName } = this.state
     if (region.length < 3) { return }
     this.setState({ loading: true })
     // Values are abs, but we need percentages
     const encodedRegion = region.map(p => `${(p.x / imageBoundingClientRect.width).toFixed(2) },${(p.y / imageBoundingClientRect.height).toFixed(2)}`).join(',')
-    axios.get(`http://localhost:5000/poisson/t2/${imageName}/${images[destImage].name}`, {
-      params: { region: encodedRegion, import_gradients: importGradients },
+    axios.get(`http://localhost:5000/poisson/t3/${imageName}/${images[destImage].name}`, {
+      params: { region: encodedRegion },
     })
       .then(res => this.setState({ resultUrl: res.data.result_url, loading: false }))
   }
 
   render () {
-    const { imageName, region, resultUrl, loading, destImage, images, importGradients } = this.state
+    const { imageName, region, resultUrl, loading, destImage, images } = this.state
     return (
       <div>
         <div className='navbar navbar-expand bg-light navbar-light'>
           <div className='d-flex w-100 align-items-center justify-content-between'>
             <h5 className='navbar-brand mb-0'>{imageName}</h5>
             <div>
-              <Link to='/task2'>Back</Link>
-              <button
-                className={classnames('btn ml-2', { 'btn-dark': importGradients, 'btn-info': !importGradients })}
-                onClick={this.handleToggleUseImportGradients}
-              >{importGradients ? 'Import Gradients' : 'Mixing Gradients'}</button>
+              <Link to='/task3'>Back</Link>
               <button
                 disabled={!region.length || loading}
                 className='btn btn-danger ml-2'
@@ -160,4 +151,4 @@ class Task2 extends React.Component {
   }
 }
 
-export default Task2
+export default Task3

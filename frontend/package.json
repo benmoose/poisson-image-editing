@@ -11,6 +11,7 @@
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
+    "prop-types": "^15.6.0",
     "react-scripts": "1.0.17",
     "standard": "^10.0.3"
   },
