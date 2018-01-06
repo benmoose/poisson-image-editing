@@ -40,7 +40,7 @@ The task code makes use of common utility methods which can be found in the neig
 
 ### Usage
 
-##### Docker
+#### Docker
 
 Using docker is the preferred way to run this project.
 
@@ -50,7 +50,7 @@ Using docker is the preferred way to run this project.
 
 The project is now running, open a browser and navigate to `localhost:3000` for the user interface. Alternatively, you can use the API directly, which is accessable at `localhost:5000`.
 
-##### Python (with `pip`)
+#### Python (with `pip`)
 
 This method is slightly more involved, and will install all the project dependencies directly to your computer. You will need to install the dependencies for both the backend and the frontend.
 
@@ -58,7 +58,7 @@ _If you don't want to use the user interface then you can skip the frontend inst
 
  - Unzip the project and navigate to the project root.
 
-###### Install Backend
+##### Install Backend
 
  - Navigate to the backend folder `cd ./backend`
  - Start a python virtual environment `python3 -m venv venv`
@@ -79,6 +79,6 @@ The frontend is now running at `localhost:3000`
 
 ### Demo Images
 
-#### Task 1
+##### Task 1
 
 ![Task 1 demo](https://github.com/benjaminhadfield/poisson-image-editing/tree/master/demos/img/t1-demo.png "Task 1 demo")
