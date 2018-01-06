@@ -7,6 +7,7 @@ Poisson Image Edition implementation (Image Processing coursework).
  - [Submission Details](#submission-details)
  - [Project Structure](#project-structure)
  - [Usage](#usage)
+ - [Customisation](#customisation)
  - [Demo Images](#demo-images)
 
 ### Submission Details
@@ -23,7 +24,7 @@ Poisson Image Edition implementation (Image Processing coursework).
 | ---- | ---- | ---- |
 | Python 3 | Either [Python 3](https://www.python.org/downloads/) or [Docker](https://www.docker.com/) | Tested on MacOS and Linux |
 
-_**Note**: Docker is the preferred way to run the program, since it doesn't
+_**Note**: Docker is the preferred way to run the project, since it doesn't
 require you to manually download requirements._
 
 ### Project Structure
@@ -76,6 +77,16 @@ The API is now running at `localhost:5000`
  - Run the frontend service with `yarn start` or `npm start`
 
 The frontend is now running at `localhost:3000`
+
+### Customisation
+
+You can use your own images with this implementation.
+All images used by the algorithm are stored in the `backend/static/` folder.
+To use your own image, just put it in this directory.
+
+There is one important restriction on the images, however.
+All images must have the dimensions `600px × 399px` (width `600px`, height `399px`).
+This is due to a limitation with this implementation of the algorithm.
 
 ### Demo Images
 
