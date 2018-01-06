@@ -104,4 +104,4 @@ def task1(image, region):
 
     # Save result to `out`, returning path to image
     return save_image(
-        Image.fromarray(filled_image, mode='LA'), 't1', name='t1')
+        Image.fromarray(filled_image, mode='LA'), 't1')

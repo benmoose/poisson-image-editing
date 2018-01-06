@@ -184,4 +184,4 @@ def task2(source_image, dest_image, region, import_gradients=True):
 
     # Save result to `out`, returning path to image
     return save_image(
-        Image.fromarray(filled_image, mode='LA'), 't2', name='t2')
+        Image.fromarray(filled_image, mode='LA'), 't2')

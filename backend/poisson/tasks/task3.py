@@ -9,9 +9,6 @@ from ..utils.img import generate_filled_pixels
 def task3(source_image, dest_image, region):
     # Clean img dir
     clean_img_dir('t3')
-    # Convert images to rgba
-    source_image = source_image.convert('RGB')
-    dest_image = dest_image.convert('RGB')
     # Create b/w mask of region
     mask = Image.new('L', source_image.size, 255)
     ImageDraw.Draw(mask).polygon(region, fill=0, outline=0)
@@ -46,4 +43,4 @@ def task3(source_image, dest_image, region):
     result_rgb_pixels = np.reshape(
         result_im, (dest_image.height, dest_image.width, 3))
     return save_image(
-        Image.fromarray(result_rgb_pixels, mode='RGB'), 't3', name='t3')
+        Image.fromarray(result_rgb_pixels, mode='RGB'), 't3')

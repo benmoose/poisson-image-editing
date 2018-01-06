@@ -5,7 +5,7 @@ from poisson.utils.api import APIError
 
 def load_image_or_error(image_name):
     try:
-        return Image.open('static/{}'.format(image_name))
+        return Image.open('static/{}'.format(image_name)).convert('RGB')
     except FileNotFoundError:
         raise APIError('{} was not found'.format(image_name), status_code=404)
 

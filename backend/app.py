@@ -85,5 +85,18 @@ def task4_route(source_name, dest_name):
     return saved_image_json(saved_to)
 
 
+# TASK 5 ROUTE
+@app.route('/poisson/t5/<image_name>')
+def task5_route(image_name):
+    # Load image
+    im = load_image_or_error(image_name)
+    # Get region corner coords (tl, tr, bl, br)
+    region = request.args.get('region')
+    region_arr = parse_region(region, im.size)
+    # Run the task
+    saved_to = task5.task5(im, region_arr)
+    return saved_image_json(saved_to)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

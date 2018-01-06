@@ -9,6 +9,7 @@ Poisson Image Edition implementation (Image Processing coursework).
  - [Usage](#usage)
  - [Customisation](#customisation)
  - [Demo Images](#demo-images)
+ - [Acknowledgements](#acknowledgements)
 
 ### Submission Details
 
@@ -93,3 +94,7 @@ This is due to a limitation with this implementation of the algorithm.
 ##### Task 1
 
 ![Task 1 demo](https://github.com/benjaminhadfield/poisson-image-editing/tree/master/demos/img/t1-demo.png "Task 1 demo")
+
+### Acknowledgements
+
+All images are taken from [Unsplash](https://unsplash.com/).
