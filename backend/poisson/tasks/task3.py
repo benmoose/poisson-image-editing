@@ -10,7 +10,7 @@ def task3(source_image, dest_image, region):
     # Clean img dir
     clean_img_dir('t3')
     # Create b/w mask of region
-    mask = Image.new('L', source_image.size, 255)
+    mask = Image.new('1', source_image.size, 1)
     ImageDraw.Draw(mask).polygon(region, fill=0, outline=0)
     g = source_image.copy()
     f = dest_image.copy()
@@ -29,17 +29,14 @@ def task3(source_image, dest_image, region):
         f_channel_pixels = list(f_channel.getdata())
         # Note v must be the same shape as dest image
         # v = _generate_v_imported_gradient(g_pixels, source_image.size)
-        print('calculating a, b')
         A, b = _generate_a_b(
             f_channel_pixels, g_channel_pixels, dest_image.size,
             source_image.size,
-            True)
-        print('solving for x')
+            False)
         x = np.linalg.solve(A, b)
         filled_pixels = generate_filled_pixels(f_channel_pixels, x)
         # Fill with pixel intensity data only
         result_im[..., i] = filled_pixels[..., 0]
-
     result_rgb_pixels = np.reshape(
         result_im, (dest_image.height, dest_image.width, 3))
     return save_image(

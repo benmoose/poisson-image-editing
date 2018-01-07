@@ -4,7 +4,7 @@ from flask_cors import CORS
 from poisson.utils.img_dir import get_images
 from poisson.utils.api import APIError, saved_image_json
 from poisson.utils.task_setup import load_image_or_error, parse_region
-from poisson.tasks import task1, task2, task3, task4, task5
+from poisson.tasks import task1, task2, task3, task5
 
 
 app = Flask(__name__)
@@ -73,16 +73,33 @@ def task3_route(source_name, dest_name):
 
 
 # TASK 4 ROUTE
-@app.route('/poisson/t4/<source_name>/<dest_name>')
-def task4_route(source_name, dest_name):
+@app.route('/poisson/t4')
+def task4_route():
     # Load images
-    source_im = load_image_or_error(source_name)
-    dest_im = load_image_or_error(dest_name)
-    # Get region corner coords (tl, tr, bl, br)
-    region = request.args.get('region')
-    region_arr = parse_region(region, source_im.size)
-    saved_to = task4.task4(source_im, dest_im, region)
-    return saved_image_json(saved_to)
+    img_dir = '/static/out/t4'
+    return jsonify([
+        {
+            'final': '{}/final-e1642.png'.format(img_dir),
+            'mask': '{}/mask-7b18d.png'.format(img_dir),
+            'red_channel': '{}/ch-0-c8ad1.png'.format(img_dir),
+            'green_channel': '{}/ch-1-2ef65.png'.format(img_dir),
+            'blue_channel': '{}/ch-2-e8edd.png'.format(img_dir),
+        },
+        {
+            'final': '{}/final-5747d.png'.format(img_dir),
+            'mask': '{}/mask-e108b.png'.format(img_dir),
+            'red_channel': '{}/ch-0-e43e3.png'.format(img_dir),
+            'green_channel': '{}/ch-1-dcd2d.png'.format(img_dir),
+            'blue_channel': '{}/ch-2-3bbe6.png'.format(img_dir),
+        },
+        {
+            'final': '{}/final-d7b9b.png'.format(img_dir),
+            'mask': '{}/mask-b8d6d.png'.format(img_dir),
+            'red_channel': '{}/ch-0-587ad.png'.format(img_dir),
+            'green_channel': '{}/ch-1-f111d.png'.format(img_dir),
+            'blue_channel': '{}/ch-2-905b1.png'.format(img_dir),
+        },
+    ])
 
 
 # TASK 5 ROUTE

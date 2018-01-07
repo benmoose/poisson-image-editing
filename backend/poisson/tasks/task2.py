@@ -162,7 +162,7 @@ def task2(source_image, dest_image, region, import_gradients=True):
     source_image = source_image.convert('L')
     dest_image = dest_image.convert('L')
     # Create b/w mask of region
-    mask = Image.new('L', source_image.size, 255)
+    mask = Image.new('1', source_image.size, 1)
     ImageDraw.Draw(mask).polygon(region, fill=0, outline=0)
     # Extract region from source
     g = source_image.copy()

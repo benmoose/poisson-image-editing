@@ -8,7 +8,6 @@ Poisson Image Edition implementation (Image Processing coursework).
  - [Project Structure](#project-structure)
  - [Usage](#usage)
  - [Customisation](#customisation)
- - [Demo Images](#demo-images)
  - [Acknowledgements](#acknowledgements)
 
 ### Submission Details
@@ -39,6 +38,10 @@ The actual algorithm implementations for each task can be found at `backend/pois
 ##### Other backend code
 
 The task code makes use of common utility methods which can be found in the neighbouring folder at `backend/poisson/utils`. The utility code doesn't contain any poisson specific code, but rather helper methods for saving images and helper methods for PIL (an image library for python).
+
+##### Demo Images
+
+Three example results can be found in the `results/` folder.
 
 ### Usage
 
@@ -88,12 +91,6 @@ To use your own image, just put it in this directory.
 There is one important restriction on the images, however.
 All images must have the dimensions `600px × 399px` (width `600px`, height `399px`).
 This is due to a limitation with this implementation of the algorithm.
-
-### Demo Images
-
-##### Task 1
-
-![Task 1 demo](https://github.com/benjaminhadfield/poisson-image-editing/tree/master/demos/img/t1-demo.png "Task 1 demo")
 
 ### Acknowledgements
 
