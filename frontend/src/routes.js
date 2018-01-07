@@ -10,6 +10,7 @@ import Select from './components/selectPage'
 import Task1Draw from './scenes/task1/draw'
 import Task2Draw from './scenes/task2/draw'
 import Task3Draw from './scenes/task3/draw'
+import Task5Draw from './scenes/task5/draw'
 
 export default () => (
   <Router>
@@ -24,9 +25,9 @@ export default () => (
         <Route path='/task2' render={() => <Select taskNumber={t.t2.number} taskDescription={t.t2.desc} />} />
         <Route path='/task3/:imageName' component={Task3Draw} />
         <Route path='/task3' render={() => <Select taskNumber={t.t3.number} taskDescription={t.t3.desc} />} />
-        <Route path='/task4/:imageName' component={Task3Draw} />
+        <Route path='/task4/:imageName' component={() => <p>Todo...</p>} />
         <Route path='/task4' render={() => <Select taskNumber={t.t4.number} taskDescription={t.t4.desc} />} />
-        <Route path='/task5/:imageName' component={Task3Draw} />
+        <Route path='/task5/:imageName' component={Task5Draw} />
         <Route path='/task5' render={() => <Select taskNumber={t.t5.number} taskDescription={t.t5.desc} />} />
 
         <Route render={() => <p>404 Not Found</p>} />

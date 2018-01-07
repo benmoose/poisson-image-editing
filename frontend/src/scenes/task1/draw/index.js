@@ -9,12 +9,17 @@ class Task1 extends React.Component {
     imageBoundingClientRect: null,
     resultUrl: '',
     region: [],
-    loading: false
+    loading: false,
+    imageNotFound: false
   }
 
   componentDidMount () {
     const { match } = this.props
     this.setState({ imageName: match.params.imageName })
+    axios.get(`http://localhost:5000/static/${match.params.imageName}`)
+      .catch(err => this.setState({
+        imageNotFound: true
+      }))
   }
 
   handleImageClick = (e) => {
@@ -42,8 +47,15 @@ class Task1 extends React.Component {
   }
 
   render () {
-    const { imageName, region, resultUrl, loading } = this.state
-    return (
+    const { imageName, region, resultUrl, loading, imageNotFound } = this.state
+    return imageNotFound ? (
+      <div className='container pt-3'>
+        <article className='alert alert-danger'>
+          <div><strong>{imageName}</strong> not found.</div>
+          <div><Link to='/task5'>Go back</Link></div>
+        </article>
+      </div>
+    ) : (
       <div>
         <div className='navbar navbar-expand bg-light navbar-light'>
           <div className='d-flex w-100 align-items-center justify-content-between'>

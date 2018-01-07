@@ -40,7 +40,7 @@ def _generate_v_imported_gradient(labelled_pixels, im_size):
 
 def _generate_a_b(labelled_pixels_dest, labelled_pixels_source, dest_size,
                   source_size, import_gradients):
-    dest_im_width, dest_im_height = dest_size
+    dest_im_width, _ = dest_size
     source_im_width, _ = source_size
     # Count the number of pixels in the region
     region_length = sum(
