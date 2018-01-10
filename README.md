@@ -2,6 +2,8 @@
 
 Poisson Image Edition implementation (Image Processing coursework).
 
+> **Note**: Apologies about the spaghetti code, I was focussing more on the concepts and less on DRY principles and project structure in this coursework.
+
 ### Table of Contents
 
  - [Submission Details](#submission-details)
@@ -53,7 +55,13 @@ Using docker is the preferred way to run this project.
  - Unzip the project and navigate to the project root in terminal
  - Run `docker-compose up`
 
-The project is now running, open a browser and navigate to `localhost:3000` for the user interface. Alternatively, you can use the API directly, which is accessable at `localhost:5000`.
+The project is now running, open a browser and navigate to `localhost:3000` for the user interface.
+Alternatively, you can use the API directly, which is accessible at `localhost:5000`.
+
+Type `ctrl c` to stop the servers.
+
+_**Note**: If you only want to run the backend server then you can type
+`docker-compose run backend` instead of `docker-compose up`._
 
 #### Python (with `pip`)
 
