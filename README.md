@@ -31,7 +31,9 @@ require you to manually download requirements._
 
 ### Project Structure
 
-This project is split into two parts, a frontend (`frontend/`) and a backend (`backend/`). The backend is a lightweight [Flask](http://flask.pocoo.org/) API and is where the poisson implementation lives. The frontend codebase is a simple [React](https://reactjs.org/) app responsible for delivering a user interface to the implementation.
+This project is split into two parts, a frontend, in `frontend/`, and a backend, in `backend/`.
+The backend is a lightweight [Flask](http://flask.pocoo.org/) server. The Poisson implementation lives in the `backend/poisson/` directory.
+The frontend is a simple [React](https://reactjs.org/) app that offers a visual interface for the implementation. Poisson editing can also be run programmatically using the API alone.
 
 ##### Poisson implementation
 
